@@ -1,11 +1,95 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Simon Says</title><link rel="stylesheet" href="../styles.css"></head>
-<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/simon-says-help.html">Help</a></div><h1>Simon Says</h1><div style="display:grid;grid-template-columns:repeat(2,120px);gap:10px;width:250px"><button class="s" data-v="0" style="height:120px;background:#ef4444"></button><button class="s" data-v="1" style="height:120px;background:#22c55e"></button><button class="s" data-v="2" style="height:120px;background:#3b82f6"></button><button class="s" data-v="3" style="height:120px;background:#eab308"></button></div><p><button id="start">Start Round</button></p><p id="status" class="note"></p></div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simon Says</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<div class="panel">
+  <div class="nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="../help/simon-says-help.html">? Help</a>
+  </div>
+  <h1>🔵 Simon Says</h1>
+  <p>Watch the flashing pattern, then repeat it in the exact same order.</p>
+
+  <div class="simon-grid">
+    <button class="simon-btn" data-v="0" style="background:#ef4444"></button>
+    <button class="simon-btn" data-v="1" style="background:#22c55e"></button>
+    <button class="simon-btn" data-v="2" style="background:#3b82f6"></button>
+    <button class="simon-btn" data-v="3" style="background:#eab308"></button>
+  </div>
+
+  <div style="display:flex;gap:.75rem;align-items:center;margin-top:.5rem;flex-wrap:wrap">
+    <button id="start">▶ Start Round</button>
+  </div>
+
+  <div class="score-bar" style="margin-top:1rem">
+    <div class="score-item">
+      <span>Round</span>
+      <span id="round">0</span>
+    </div>
+    <div class="score-item">
+      <span>Best</span>
+      <span id="best">0</span>
+    </div>
+  </div>
+
+  <p id="status" class="note">Press Start to begin!</p>
+</div>
+
 <script>
-let seq=[],pos=0,active=false;
-const btns=[...document.querySelectorAll('.s')],st=document.getElementById('status');
-function flash(i){return new Promise(res=>{ const b=btns[i],old=b.style.opacity; b.style.opacity='0.4'; setTimeout(()=>{b.style.opacity=old||'1';res();},350); });}
-async function show(){ active=false; for(const i of seq){ await flash(i); await new Promise(r=>setTimeout(r,160)); } pos=0; active=true; st.textContent='Repeat the pattern.'; }
-document.getElementById('start').onclick=async()=>{ seq.push(Math.floor(Math.random()*4)); st.textContent='Watch...'; await show(); };
-btns.forEach((b,i)=>b.onclick=async()=>{ if(!active)return; await flash(i); if(i!==seq[pos]){ st.textContent='Wrong color. Restart to try again.'; seq=[]; active=false; return; } pos++; if(pos===seq.length){ st.textContent='Correct! Score: '+seq.length; active=false; } });
-</script></body></html>
+let seq = [], pos = 0, active = false, best = 0;
+const btns = [...document.querySelectorAll('.simon-btn')];
+const st   = document.getElementById('status');
+
+function flash(i) {
+  return new Promise(res => {
+    btns[i].classList.add('flash');
+    setTimeout(() => { btns[i].classList.remove('flash'); res(); }, 380);
+  });
+}
+
+async function show() {
+  active = false;
+  st.textContent = '👀 Watch carefully...';
+  st.className   = 'note';
+  for (const i of seq) {
+    await flash(i);
+    await new Promise(r => setTimeout(r, 180));
+  }
+  pos    = 0;
+  active = true;
+  st.textContent = '🖱️ Now repeat the pattern!';
+}
+
+document.getElementById('start').onclick = async () => {
+  seq.push(Math.floor(Math.random()*4));
+  document.getElementById('round').textContent = seq.length;
+  if (seq.length > best) { best = seq.length; document.getElementById('best').textContent = best; }
+  await show();
+};
+
+btns.forEach((b, i) => b.onclick = async () => {
+  if (!active) return;
+  await flash(i);
+  if (i !== seq[pos]) {
+    st.textContent = '❌ Wrong! Press Start to try again.';
+    st.className   = 'note lose';
+    seq    = [];
+    active = false;
+    document.getElementById('round').textContent = 0;
+    return;
+  }
+  pos++;
+  if (pos === seq.length) {
+    st.textContent = '✅ Correct! Round ' + seq.length + ' done!';
+    st.className   = 'note win';
+    active = false;
+  }
+});
+</script>
+</body>
+</html>

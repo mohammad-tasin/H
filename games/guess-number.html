@@ -1,9 +1,72 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Guess the Number</title><link rel="stylesheet" href="../styles.css"></head>
-<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/guess-number-help.html">Help</a></div><h1>Guess the Number</h1><p>Guess a number from 1 to 100.</p><input id="guess" type="number" min="1" max="100"><button id="check">Guess</button><button id="new">New Game</button><p id="msg" class="note"></p><p id="tries" class="note">Tries: 0</p></div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guess the Number</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<div class="panel">
+  <div class="nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="../help/guess-number-help.html">? Help</a>
+  </div>
+  <h1>🔢 Guess the Number</h1>
+  <p>I'm thinking of a number between <strong style="color:#a78bfa">1</strong> and <strong style="color:#a78bfa">100</strong>. Can you find it?</p>
+
+  <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem">
+    <input id="guess" type="number" min="1" max="100" placeholder="Enter 1 – 100" style="width:160px" />
+    <button id="check">Guess</button>
+    <button id="new" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#cbd5e1">New Game</button>
+  </div>
+
+  <p id="msg" class="note"></p>
+
+  <div class="score-bar" style="margin-top:1rem">
+    <div class="score-item">
+      <span>Tries</span>
+      <span id="tries">0</span>
+    </div>
+    <div class="score-item">
+      <span>Best</span>
+      <span id="best">—</span>
+    </div>
+  </div>
+</div>
+
 <script>
-let target = Math.floor(Math.random()*100)+1, count = 0;
-const msg=document.getElementById('msg'), tries=document.getElementById('tries');
-document.getElementById('check').onclick=()=>{ const g=Number(document.getElementById('guess').value); if(!g||g<1||g>100){msg.textContent='Enter a valid number (1-100).'; return;} count++; tries.textContent='Tries: '+count; if(g===target){msg.textContent='Correct!';} else msg.textContent=g<target?'Too low.':'Too high.'; };
-document.getElementById('new').onclick=()=>{ target=Math.floor(Math.random()*100)+1; count=0; msg.textContent='New game started.'; tries.textContent='Tries: 0'; document.getElementById('guess').value=''; };
-</script></body></html>
+let target = Math.floor(Math.random()*100)+1, count = 0, best = null;
+const msg  = document.getElementById('msg');
+const triesEl = document.getElementById('tries');
+const bestEl  = document.getElementById('best');
+
+document.getElementById('check').onclick = () => {
+  const g = Number(document.getElementById('guess').value);
+  if (!g || g < 1 || g > 100) { msg.textContent = '⚠️ Enter a valid number (1–100).'; msg.className='note'; return; }
+  count++;
+  triesEl.textContent = count;
+  if (g === target) {
+    msg.textContent = '🎉 Correct! You found it in ' + count + ' tries.';
+    msg.className = 'note win';
+    if (best === null || count < best) { best = count; bestEl.textContent = best; }
+  } else {
+    msg.textContent = g < target ? '🔼 Too low — go higher!' : '🔽 Too high — go lower!';
+    msg.className = 'note';
+  }
+};
+
+document.getElementById('new').onclick = () => {
+  target = Math.floor(Math.random()*100)+1;
+  count  = 0;
+  triesEl.textContent = 0;
+  msg.textContent = '🆕 New game started — make your first guess!';
+  msg.className = 'note';
+  document.getElementById('guess').value = '';
+};
+
+document.getElementById('guess').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('check').click(); });
+msg.textContent = 'Make your first guess!';
+</script>
+</body>
+</html>

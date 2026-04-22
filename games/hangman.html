@@ -1,10 +1,81 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hangman</title><link rel="stylesheet" href="../styles.css"></head>
-<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/hangman-help.html">Help</a></div><h1>Hangman</h1><p id="word" style="font-size:1.5rem;letter-spacing:8px"></p><input id="letter" maxlength="1" placeholder="a-z"><button id="guess">Guess</button><button id="new">New Word</button><p id="used" class="note"></p><p id="status" class="note"></p></div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hangman</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<div class="panel">
+  <div class="nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="../help/hangman-help.html">? Help</a>
+  </div>
+  <h1>🔤 Hangman</h1>
+  <p>Guess the hidden word — you have <strong style="color:#a78bfa">6</strong> wrong guesses before it's over!</p>
+
+  <div class="hangman-word" id="word"></div>
+  <div class="hangman-lives" id="lives"></div>
+  <div class="used-letters" id="used"></div>
+
+  <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem">
+    <input id="letter" maxlength="1" placeholder="a – z" style="width:80px;text-align:center;font-size:1.2rem" />
+    <button id="guess">Guess</button>
+    <button id="new" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#cbd5e1">New Word</button>
+  </div>
+
+  <p id="status" class="note"></p>
+</div>
+
 <script>
-const words=['offline','browser','javascript','puzzle','strategy','arcade']; let w='',set=new Set(),bad=0;
-function start(){ w=words[Math.floor(Math.random()*words.length)]; set=new Set(); bad=0; draw(); }
-function draw(){ const shown=[...w].map(ch=>set.has(ch)?ch:'_').join(' '); document.getElementById('word').textContent=shown; document.getElementById('used').textContent='Used: '+[...set].join(', '); const st=document.getElementById('status'); if(!shown.includes('_')) st.textContent='You win!'; else if(bad>=6) st.textContent='You lose. Word: '+w; else st.textContent='Wrong guesses left: '+(6-bad); }
-document.getElementById('guess').onclick=()=>{ const ch=(document.getElementById('letter').value||'').toLowerCase(); document.getElementById('letter').value=''; if(!/^[a-z]$/.test(ch) || set.has(ch) || bad>=6) return; set.add(ch); if(!w.includes(ch)) bad++; draw(); };
-document.getElementById('new').onclick=start; start();
-</script></body></html>
+const words = ['offline','browser','javascript','puzzle','strategy','arcade','hangman','keyboard','variable','function'];
+let w = '', set = new Set(), bad = 0;
+
+function start() {
+  w   = words[Math.floor(Math.random()*words.length)];
+  set = new Set();
+  bad = 0;
+  document.getElementById('letter').value = '';
+  document.getElementById('status').textContent = '';
+  document.getElementById('status').className = 'note';
+  draw();
+}
+
+function draw() {
+  const shown = [...w].map(ch => set.has(ch) ? ch : '_').join(' ');
+  document.getElementById('word').textContent = shown;
+
+  const hearts = '❤️'.repeat(6-bad) + '🖤'.repeat(bad);
+  document.getElementById('lives').textContent = hearts;
+
+  const used = [...set].sort().join('  ');
+  document.getElementById('used').textContent = used ? 'Used: ' + used : '';
+
+  const st = document.getElementById('status');
+  if (!shown.includes('_')) {
+    st.textContent = '🎉 You guessed it!';
+    st.className   = 'note win';
+  } else if (bad >= 6) {
+    st.textContent = '💀 Game over — the word was: ' + w;
+    st.className   = 'note lose';
+  } else {
+    st.textContent = 'Wrong guesses left: ' + (6 - bad);
+    st.className   = 'note';
+  }
+}
+
+document.getElementById('guess').onclick = () => {
+  const ch = (document.getElementById('letter').value || '').toLowerCase();
+  document.getElementById('letter').value = '';
+  if (!/^[a-z]$/.test(ch) || set.has(ch) || bad >= 6) return;
+  set.add(ch);
+  if (!w.includes(ch)) bad++;
+  draw();
+};
+document.getElementById('letter').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('guess').click(); });
+document.getElementById('new').onclick = start;
+start();
+</script>
+</body>
+</html>
