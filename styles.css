@@ -1,0 +1,90 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6fb;
+  color: #182033;
+}
+header {
+  padding: 1rem;
+  background: #1e3a8a;
+  color: #fff;
+  text-align: center;
+}
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+section { margin-bottom: 2rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.card a {
+  display: inline-block;
+  margin-right: 0.5rem;
+  margin-top: 0.4rem;
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 600;
+}
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 900px;
+  margin: 1rem auto;
+}
+button {
+  border: none;
+  background: #1d4ed8;
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+input {
+  padding: 0.45rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+.board-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  gap: 6px;
+  margin: 1rem 0;
+}
+.board-3 button {
+  height: 90px;
+  font-size: 2rem;
+  background: #2563eb;
+}
+.board-4 {
+  display: grid;
+  grid-template-columns: repeat(7, 48px);
+  gap: 4px;
+  margin: 1rem 0;
+}
+.cell {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+.note { font-size: 0.95rem; color: #334155; }
+.nav a {
+  text-decoration: none;
+  margin-right: 0.7rem;
+  color: #1d4ed8;
+  font-weight: 600;
+}
