@@ -4,7 +4,7 @@ This repository contains **10 local offline browser games**.
 
 ## How to use
 1. Download or clone the repository.
-2. Open `/home/runner/work/H/H/index.html` in any modern browser.
+2. Open `index.html` (or `./index.html`) in any modern browser.
 3. Play from the organized categories.
 4. Use each game's **Help** link for instructions.
 
