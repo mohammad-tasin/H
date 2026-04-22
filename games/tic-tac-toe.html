@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tic-Tac-Toe</title><link rel="stylesheet" href="../styles.css"></head>
+<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/tic-tac-toe-help.html">Help</a></div><h1>Tic-Tac-Toe</h1><p>You are X. Computer is O.</p><div id="board" class="board-3"></div><button id="reset">Reset</button><p id="status" class="note"></p></div>
+<script>
+const boardEl=document.getElementById('board'), statusEl=document.getElementById('status'); let b=Array(9).fill(''), over=false;
+const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function winner(p){ return wins.some(w=>w.every(i=>b[i]===p)); }
+function draw(){ boardEl.innerHTML=''; b.forEach((v,i)=>{ const bt=document.createElement('button'); bt.textContent=v; bt.onclick=()=>move(i); boardEl.appendChild(bt); }); }
+function move(i){ if(over||b[i]) return; b[i]='X'; step(); if(over) return; const open=b.map((v,i)=>v?null:i).filter(v=>v!==null); if(!open.length){over=true;return;} b[open[Math.floor(Math.random()*open.length)]]='O'; step(); }
+function step(){ draw(); if(winner('X')){statusEl.textContent='You win!'; over=true;} else if(winner('O')){statusEl.textContent='Computer wins.'; over=true;} else if(b.every(Boolean)){statusEl.textContent='Draw.'; over=true;} else statusEl.textContent='Your turn.'; }
+document.getElementById('reset').onclick=()=>{ b=Array(9).fill(''); over=false; statusEl.textContent='Your turn.'; draw(); }; draw(); statusEl.textContent='Your turn.';
+</script></body></html>

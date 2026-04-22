@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Connect Four</title><link rel="stylesheet" href="../styles.css"></head>
+<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/connect-four-help.html">Help</a></div><h1>Connect Four</h1><p>Choose a column. You are 🔴, CPU is 🟡.</p><div id="controls"></div><div id="board" class="board-4"></div><button id="new">New Game</button><p id="status" class="note"></p></div>
+<script>
+const R=6,C=7; let b,over=false;
+function init(){b=Array.from({length:R},()=>Array(C).fill(0)); over=false; render(); document.getElementById('status').textContent='Your turn.';}
+function drop(col,p){for(let r=R-1;r>=0;r--) if(!b[r][col]){b[r][col]=p; return r;} return -1;}
+function win(p){for(let r=0;r<R;r++)for(let c=0;c<C;c++){ if(c+3<C&&[0,1,2,3].every(i=>b[r][c+i]===p))return true; if(r+3<R&&[0,1,2,3].every(i=>b[r+i][c]===p))return true; if(r+3<R&&c+3<C&&[0,1,2,3].every(i=>b[r+i][c+i]===p))return true; if(r-3>=0&&c+3<C&&[0,1,2,3].every(i=>b[r-i][c+i]===p))return true;} return false;}
+function full(){return b[0].every(Boolean);}
+function cpu(){const opts=[...Array(C).keys()].filter(c=>b[0][c]===0); if(!opts.length)return; drop(opts[Math.floor(Math.random()*opts.length)],2);}
+function move(c){if(over||drop(c,1)<0)return; if(win(1)){over=true; document.getElementById('status').textContent='You win!'; render(); return;} if(full()){over=true;document.getElementById('status').textContent='Draw.';render();return;} cpu(); if(win(2)){over=true; document.getElementById('status').textContent='CPU wins.';} else if(full()){over=true;document.getElementById('status').textContent='Draw.';} else document.getElementById('status').textContent='Your turn.'; render();}
+function render(){ const ctrl=document.getElementById('controls'); ctrl.innerHTML=''; for(let c=0;c<C;c++){const bt=document.createElement('button'); bt.textContent='↓ '+(c+1); bt.onclick=()=>move(c); bt.style.marginRight='4px'; ctrl.appendChild(bt);} const bd=document.getElementById('board'); bd.innerHTML=''; for(let r=0;r<R;r++)for(let c=0;c<C;c++){ const d=document.createElement('div'); d.className='cell'; d.style.background=b[r][c]===1?'#ef4444':b[r][c]===2?'#eab308':'#dbeafe'; bd.appendChild(d);} }
+document.getElementById('new').onclick=init; init();
+</script></body></html>

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Memory Match</title><link rel="stylesheet" href="../styles.css"></head>
+<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/memory-match-help.html">Help</a></div><h1>Memory Match</h1><div id="grid" class="grid"></div><button id="restart">Restart</button><p id="msg" class="note"></p></div>
+<script>
+const em=['🍎','🍌','🍓','🍒','🍍','🥝']; let cards=[],open=[],lock=false,done=0;
+function setup(){cards=[...em,...em].sort(()=>Math.random()-0.5).map((v,i)=>({v,show:false,ok:false,i}));open=[];lock=false;done=0;render();document.getElementById('msg').textContent='';}
+function tap(i){ if(lock) return; const c=cards[i]; if(c.show||c.ok) return; c.show=true; open.push(i); render(); if(open.length===2){ lock=true; const [a,b]=open; if(cards[a].v===cards[b].v){ cards[a].ok=cards[b].ok=true; done+=2; open=[]; lock=false; if(done===cards.length) document.getElementById('msg').textContent='You matched all pairs!'; } else setTimeout(()=>{cards[a].show=false;cards[b].show=false;open=[];lock=false;render();},700); }}
+function render(){ const g=document.getElementById('grid'); g.innerHTML=''; cards.forEach((c,i)=>{ const bt=document.createElement('button'); bt.style.height='70px'; bt.textContent=(c.show||c.ok)?c.v:'?'; bt.onclick=()=>tap(i); g.appendChild(bt); }); }
+document.getElementById('restart').onclick=setup; setup();
+</script></body></html>
