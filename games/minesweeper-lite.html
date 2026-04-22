@@ -1,13 +1,92 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Minesweeper Lite</title><link rel="stylesheet" href="../styles.css"></head>
-<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/minesweeper-lite-help.html">Help</a></div><h1>Minesweeper Lite</h1><div id="board" style="display:grid;grid-template-columns:repeat(8,36px);gap:4px"></div><p><button id="new">New Game</button></p><p id="status" class="note"></p></div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minesweeper Lite</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<div class="panel">
+  <div class="nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="../help/minesweeper-lite-help.html">? Help</a>
+  </div>
+  <h1>💣 Minesweeper Lite</h1>
+  <p>Reveal all safe cells on the 8×8 grid — avoid the 10 hidden mines!</p>
+
+  <div id="board" class="mine-grid" style="grid-template-columns:repeat(8,38px)"></div>
+
+  <div style="display:flex;gap:.75rem;align-items:center;margin-top:1rem;flex-wrap:wrap">
+    <button id="new">↺ New Game</button>
+  </div>
+
+  <p id="status" class="note">Click any cell to begin.</p>
+</div>
+
 <script>
-const N=8,M=10; let mines=new Set(),open=new Set(),over=false;
-function id(r,c){return r+','+c}
-function neighbors(r,c){const arr=[]; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc)continue; const nr=r+dr,nc=c+dc; if(nr>=0&&nc>=0&&nr<N&&nc<N)arr.push([nr,nc]); } return arr;}
-function around(r,c){return neighbors(r,c).filter(([nr,nc])=>mines.has(id(nr,nc))).length}
-function make(){ mines=new Set(); open=new Set(); over=false; while(mines.size<M) mines.add(id(Math.floor(Math.random()*N),Math.floor(Math.random()*N))); draw(); document.getElementById('status').textContent='Open all safe cells.'; }
-function reveal(r,c){ const k=id(r,c); if(over||open.has(k)) return; open.add(k); if(mines.has(k)){ over=true; document.getElementById('status').textContent='Boom! You hit a mine.'; draw(true); return; } if(around(r,c)===0) neighbors(r,c).forEach(([nr,nc])=>reveal(nr,nc)); if(open.size===N*N-M){ over=true; document.getElementById('status').textContent='You win!'; }}
-function draw(showAll=false){ const b=document.getElementById('board'); b.innerHTML=''; for(let r=0;r<N;r++)for(let c=0;c<N;c++){ const k=id(r,c), bt=document.createElement('button'); bt.style.width='36px'; bt.style.height='36px'; const isOpen=open.has(k)||showAll; if(isOpen){ if(mines.has(k)){ bt.textContent='💣'; bt.style.background='#ef4444'; } else { const n=around(r,c); bt.textContent=n?String(n):''; bt.style.background='#93c5fd'; } } else bt.textContent=''; bt.onclick=()=>reveal(r,c); b.appendChild(bt);} }
-document.getElementById('new').onclick=make; make();
-</script></body></html>
+const numColors = ['','#60a5fa','#34d399','#f87171','#a78bfa','#fb923c','#22d3ee','#e879f9','#f1f5f9'];
+const N = 8, M = 10;
+let mines = new Set(), open = new Set(), over = false;
+
+function id(r,c) { return r+','+c; }
+function neighbors(r,c) {
+  const arr = [];
+  for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++) {
+    if (!dr && !dc) continue;
+    const nr=r+dr, nc=c+dc;
+    if (nr>=0&&nc>=0&&nr<N&&nc<N) arr.push([nr,nc]);
+  }
+  return arr;
+}
+function around(r,c) { return neighbors(r,c).filter(([nr,nc])=>mines.has(id(nr,nc))).length; }
+
+function make() {
+  mines = new Set(); open = new Set(); over = false;
+  while (mines.size < M) mines.add(id(Math.floor(Math.random()*N), Math.floor(Math.random()*N)));
+  draw();
+  document.getElementById('status').textContent = 'Click any cell to begin.';
+  document.getElementById('status').className = 'note';
+}
+
+function reveal(r,c) {
+  const k = id(r,c);
+  if (over || open.has(k)) return;
+  open.add(k);
+  if (mines.has(k)) {
+    over = true;
+    document.getElementById('status').textContent = '💥 Boom! You hit a mine.';
+    document.getElementById('status').className = 'note lose';
+    draw(true); return;
+  }
+  if (around(r,c) === 0) neighbors(r,c).forEach(([nr,nc]) => reveal(nr,nc));
+  if (open.size === N*N - M) {
+    over = true;
+    document.getElementById('status').textContent = '🎉 You cleared the board!';
+    document.getElementById('status').className = 'note win';
+  }
+}
+
+function draw(showAll=false) {
+  const b = document.getElementById('board');
+  b.innerHTML = '';
+  for (let r=0; r<N; r++) for (let c=0; c<N; c++) {
+    const k  = id(r,c);
+    const el = document.createElement('button');
+    el.className = 'mine-cell';
+    const isOpen = open.has(k) || showAll;
+    if (isOpen) {
+      el.classList.add(mines.has(k) ? 'mine' : 'open');
+      if (mines.has(k)) { el.textContent = '💣'; }
+      else { const n = around(r,c); el.textContent = n ? n : ''; el.style.color = numColors[n] || '#f1f5f9'; }
+    }
+    el.onclick = () => reveal(r,c);
+    b.appendChild(el);
+  }
+}
+
+document.getElementById('new').onclick = make;
+make();
+</script>
+</body>
+</html>
