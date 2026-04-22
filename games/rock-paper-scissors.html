@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Rock Paper Scissors</title><link rel="stylesheet" href="../styles.css"></head>
+<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/rock-paper-scissors-help.html">Help</a></div><h1>Rock Paper Scissors</h1><p><button data-c="rock">Rock</button> <button data-c="paper">Paper</button> <button data-c="scissors">Scissors</button></p><p id="round" class="note"></p><p id="score" class="note">You: 0 | CPU: 0 | Draws: 0</p></div>
+<script>
+const list=['rock','paper','scissors']; let y=0,c=0,d=0;
+function decide(a,b){ if(a===b) return 0; if((a==='rock'&&b==='scissors')||(a==='paper'&&b==='rock')||(a==='scissors'&&b==='paper')) return 1; return -1; }
+document.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{ const you=b.dataset.c, cpu=list[Math.floor(Math.random()*3)], r=decide(you,cpu); if(r>0)y++; else if(r<0)c++; else d++; document.getElementById('round').textContent=`You: ${you}, CPU: ${cpu} → ${r>0?'You win':r<0?'CPU wins':'Draw'}`; document.getElementById('score').textContent=`You: ${y} | CPU: ${c} | Draws: ${d}`; });
+</script></body></html>

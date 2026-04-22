@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Guess the Number</title><link rel="stylesheet" href="../styles.css"></head>
+<body><div class="panel"><div class="nav"><a href="../index.html">Home</a><a href="../help/guess-number-help.html">Help</a></div><h1>Guess the Number</h1><p>Guess a number from 1 to 100.</p><input id="guess" type="number" min="1" max="100"><button id="check">Guess</button><button id="new">New Game</button><p id="msg" class="note"></p><p id="tries" class="note">Tries: 0</p></div>
+<script>
+let target = Math.floor(Math.random()*100)+1, count = 0;
+const msg=document.getElementById('msg'), tries=document.getElementById('tries');
+document.getElementById('check').onclick=()=>{ const g=Number(document.getElementById('guess').value); if(!g||g<1||g>100){msg.textContent='Enter a valid number (1-100).'; return;} count++; tries.textContent='Tries: '+count; if(g===target){msg.textContent='Correct!';} else msg.textContent=g<target?'Too low.':'Too high.'; };
+document.getElementById('new').onclick=()=>{ target=Math.floor(Math.random()*100)+1; count=0; msg.textContent='New game started.'; tries.textContent='Tries: 0'; document.getElementById('guess').value=''; };
+</script></body></html>
